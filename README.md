@@ -27,3 +27,18 @@ Dataset: https://www.kaggle.com/datasets/aneesarom/rider-with-helmet-without-hel
 
 
 If you find this project useful, kindly give it a star! ⭐️
+
+
+## How to run:
+
+```bash
+conda create -n venv python==7.3 -y
+```
+
+```bash
+conda activate venv
+```
+
+```bash
+pip install -r requirements.txt
+```
