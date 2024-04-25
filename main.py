@@ -1,3 +1,10 @@
 from src.detection.logger import logging 
+from src.detection.pipeline.training_pipeline import TrainingPipeline
 
-logging.info("Welcome to the project")
+
+if __name__ == '__main__':
+    obj = TrainingPipeline()
+    obj.run_pipeline()
+
+
+    
