@@ -1,13 +1,15 @@
 from src.detection.components.data_ingestion import DataIngestion
 from src.detection.components.data_validation import DataValidation
 from src.detection.components.model_trainer import ModelTrainer
+from src.detection.components.model_pusher import ModelPusher
+from src.detection.configuration.s3_operations import S3Operation
 from src.detection.logger import logging
 from src.detection.exception import ModelException
 import sys, os
 
-from src.detection.entity.config_entity import (DataIngestionConfig, DataValidationConfig, ModelTrainerConfig)
+from src.detection.entity.config_entity import (DataIngestionConfig, DataValidationConfig, ModelTrainerConfig, ModelPusherConfig)
 
-from src.detection.entity.artifact_entity import (DataIngestionArtifact, DataValidationArtifact, ModelTrainerArtifact)
+from src.detection.entity.artifact_entity import (DataIngestionArtifact, DataValidationArtifact, ModelTrainerArtifact, ModelPusherArtifact)
 
 
 class TrainingPipeline:
@@ -16,6 +18,8 @@ class TrainingPipeline:
             self.data_ingestion_config = DataIngestionConfig()
             self.data_validation_config = DataValidationConfig()
             self.model_trainer_config = ModelTrainerConfig()
+            self.model_pusher_config = ModelPusherConfig()
+            self.s3_operations = S3Operation()
         except Exception as e:
             raise ModelException(e,sys)
         
@@ -54,6 +58,20 @@ class TrainingPipeline:
             return model_trainer_artifact
         except Exception as e:
             raise ModelException(e,sys)
+        
+    def start_model_pusher(self, model_trainer_articat: ModelTrainerArtifact) ->ModelPusherArtifact:
+        logging.info("Enterd the start_model_pusher method of TrainingPipeline class")
+        try:
+            model_pusher = ModelPusher(model_pusher_config=self.model_pusher_config,
+                                       model_trainer_artifact=model_trainer_articat,
+                                       s3=self.s3_operations)
+            model_pusher_artifacts =model_pusher.initiate_model_pusher()
+            logging.info("Exist the start_model_pusher method of TrainingPipeline class")
+            return model_pusher_artifacts
+        except Exception as e:
+            raise ModelException(e,sys)
+        
+        
     def run_pipeline(self):
         try:
             data_ingestion_artifacts = self.start_data_ingestion()
@@ -61,5 +79,7 @@ class TrainingPipeline:
             
             if data_validtion_artifacts.validation_status == True:
                 model_trainer_artifacts = self.start_model_trainer()
+            
+            model_pusher = self.start_model_pusher(model_trainer_articat=model_trainer_artifacts)
         except Exception as e:
             raise ModelException(e,sys)

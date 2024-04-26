@@ -28,6 +28,7 @@ class DataIngestion:
             zip_file_path = os.path.join(zip_download_dir,DATA_INGESTION_DATA_NAME)
             logging.info(f"Downloading fata from {data_set_url} into file {zip_file_path}")
             file_id = data_set_url.split("/")[-2]
+            zip_file_path = zip_file_path+".zip"
             prefix = 'https://drive.google.com/uc?/export=download&id='
             gdown.download(prefix+file_id,zip_file_path)
             logging.info(f"Downloading fata from {data_set_url} into file {zip_file_path}")

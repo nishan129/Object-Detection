@@ -2,6 +2,7 @@ import os, sys
 import yaml
 from src.detection.logger import logging
 from src.detection.exception import ModelException
+import zipfile
 
 from src.detection.entity.artifact_entity import  DataIngestionArtifact, ModelTrainerArtifact
 from src.detection.entity.config_entity import ModelTrainerConfig
@@ -17,11 +18,11 @@ class ModelTrainer:
     
     def initiate_model_trainer(self) -> ModelTrainerArtifact:
         logging.info("Enterd initiate_model_trainer method of ModelTrainer class")
-        
         try:
             logging.info("Unzipping data")
-            os.system("unzip object_detection")
-            os.system("rm object_detection")
+            with zipfile.ZipFile('object_detection.zip', 'r') as zip_ref:
+                zip_ref.extractall()
+            os.system("del object_detection.zip")
             
             with open("coco128.yaml", 'r') as strem:
                 num_classes = str(yaml.safe_load(strem)['nc'])
@@ -37,9 +38,9 @@ class ModelTrainer:
                 yaml.dump(config, f)
             
             os.system(f"cd yolov5/ && python train.py --img 320 --batch {self.model_trainer_config.batch_size} --epochs {self.model_trainer_config.no_epochs} --data ../coco128.yaml --cfg ./models/custom_yolov5s.yaml --weights {self.model_trainer_config.weight_name} --name yolov5s_results --cache")
-            os.system("cp yolov5/runs/train/yolov5s_results/weights/best.pt yolov5/")
+            os.system("copy yolov5/runs/train/yolov5s_results/weights/best.pt yolov5/")
             os.makedirs(self.model_trainer_config.model_trainer_dir, exist_ok=True)
-            os.system(f"cp yolov5/runs/train/yolov5s_results/weights/best.py {self.model_trainer_config.model_trainer_dir}")
+            os.system(f"copy yolov5/runs/train/yolov5s_results/weights/best.py {self.model_trainer_config.model_trainer_dir}")
             
             os.system("rm -rf yolov5/runs")
             os.system("rm -rf train")
@@ -56,3 +57,6 @@ class ModelTrainer:
             return model_trainer_artifact
         except Exception as e:
             raise ModelException(e,sys)
+        
+        
+        

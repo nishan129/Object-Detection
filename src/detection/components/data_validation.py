@@ -19,7 +19,7 @@ class DataValidation:
     def validate_all_file_exist(self) -> bool:
         try:
             validation_status = None
-            all_file = os.listdir(self.data_ingestion_artifact.feature_store_path+"/archive (9)")
+            all_file = os.listdir(self.data_ingestion_artifact.feature_store_path)
             
             for file in all_file:
                 if file not in  self.data_validation_config.data_validation_required_file:
