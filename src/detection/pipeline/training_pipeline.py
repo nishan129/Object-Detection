@@ -80,6 +80,6 @@ class TrainingPipeline:
             if data_validtion_artifacts.validation_status == True:
                 model_trainer_artifacts = self.start_model_trainer()
             
-            model_pusher = self.start_model_pusher(model_trainer_articat=model_trainer_artifacts)
+                model_pusher = self.start_model_pusher(model_trainer_articat=model_trainer_artifacts)
         except Exception as e:
             raise ModelException(e,sys)
