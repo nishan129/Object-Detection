@@ -7,6 +7,7 @@ from src.detection.utils.main_utils import decodeImage, encodeImageIntoBase64
 from flask import Flask, request, jsonify, render_template, Response
 from flask_cors import CORS, cross_origin
 from src.detection.constant.application import APP_HOST, APP_PORT
+from src.detection.configuration.s3_operations import S3Operation
 
 import shutil
 import pathlib
@@ -62,6 +63,7 @@ def predictRoute():
 @cross_origin()
 def predictLive():
     try:
+
         os.system("cd yolov5/ && python detect.py --weights best.pt --img 320 --conf 0.5 --source 0")
         shutil.rmtree("yolov5/runs") 
         return "Camera starting"
