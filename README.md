@@ -43,4 +43,7 @@ conda activate venv
 pip install -r requirements.txt
 ```
 
-128659682884.dkr.ecr.eu-north-1.amazonaws.com/object-detection
+```bash
+python app.py
+```
+

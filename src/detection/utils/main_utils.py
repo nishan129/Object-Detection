@@ -2,7 +2,9 @@ import os.path
 import sys
 import yaml
 import base64
-
+import uuid
+import csv
+import cv2
 from src.detection.logger import logging
 from src.detection.exception import ModelException
 
@@ -38,3 +40,12 @@ def decodeImage(imgstring, filename):
 def encodeImageIntoBase64(croppedImagePath):
     with open(croppedImagePath, 'rb') as f:
         return base64.b64encode(f.read())
+    
+    
+def save_result(text, region, csv_filename, folder_path):
+    image_name = f"{format(uuid.uuid1())}.jpg"
+    
+    cv2.imwrite(os.path.join(folder_path, image_name), region)
+    with open(csv_filename, mode='a',newline="") as f:
+        Csv_writer = csv.writer(f,delimiter=',',quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        Csv_writer.writerow([image_name,text])
