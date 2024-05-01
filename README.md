@@ -32,7 +32,7 @@ If you find this project useful, kindly give it a star! ⭐️
 ## How to run:
 
 ```bash
-conda create -n venv python==7.3 -y
+conda create -p venv python==7.3 -y
 ```
 
 ```bash
